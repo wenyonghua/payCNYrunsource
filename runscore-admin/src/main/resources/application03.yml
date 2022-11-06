@@ -1,0 +1,67 @@
+server:
+  port: 8088
+  servlet:
+    session:
+      cookie:
+        name: sessionid_admin
+spring:
+  application:
+    name: runscore-admin
+  datasource:
+    url: jdbc:mysql://144.34.163.64:3306/runscore2?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Ho_Chi_Minh&autoReconnect=true&failOverReadOnly=false&maxReconnects=10
+    #jdbc:mysql://127.0.0.1:3306/runscore2?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: 19880806Ww*
+    driverClassName: com.mysql.cj.jdbc.Driver
+    config:
+      multi-statement-allow: true
+    hikari:
+      minimum-idle: 3
+      maximum-pool-size: 20
+      max-lifetime: 90000
+      connection-test-query: SELECT 1
+  jpa:
+    show-sql: false
+    generate-ddl: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+  thymeleaf:
+    cache: false
+  redis:
+    port: 6379
+    host: 144.34.163.64
+    password: 19880806
+    timeout: 6000
+  session:
+    store-type: redis
+    timeout: 7200s
+redisson:
+  singleServerConfig:
+    address: 144.34.163.64:6379
+    #    address: 47.92.167.103:6379
+    password: 19880806
+jetcache:
+  statIntervalMinutes: 15
+  areaInCacheName: false
+  local:
+    default:
+      type: linkedhashmap
+      keyConvertor: fastjson
+  remote:
+    default:
+      type: redis
+      keyConvertor: fastjson
+      valueEncoder: java
+      valueDecoder: java
+      poolConfig:
+        minIdle: 5
+        maxIdle: 20
+        maxTotal: 50
+      host: 144.34.163.64
+      port: 6379
+      password: 19880806
+      database: 0
+      timeout: 10000

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>付款订单列表(Payment)</title>
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+<script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+<script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+<script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
+<script src="https://cdn.staticfile.org/dayjs/1.7.8/dayjs.min.js"></script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.13.1/bootstrap-table.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.13.1/bootstrap-table.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.13.1/locale/bootstrap-table-zh-CN.min.js"></script>
+<link href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script src="https://unpkg.com/art-template@4.13.2/lib/template-web.js"></script>
+<link href="/css/common/common.css" rel="stylesheet" type="text/css">
+<script src="/js/common/common.js"></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/css/bootstrap-select.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/js/bootstrap-select.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/js/i18n/defaults-zh_CN.min.js"></script>
+
+	<!--点击详情-->
+<script id="merchant-order-detail" type="text/html">
+	<div class="table-detail">
+	<div class="row">
+	<div class="col-sm-9">
+		<div class="row">
+				<div class="col-sm-5 table-detail-item-label">订单有效时间:</div>
+				<div class="col-sm-7 table-detail-item-value">{{merchantOrderInfo.usefulTime }}</div>
+		</div>	
+		<div class="row">
+				<div class="col-sm-5 table-detail-item-label">确认时间:</div> 
+				<div class="col-sm-7 table-detail-item-value">{{merchantOrderInfo.confirmTime }}</div>
+		</div>	
+		<div class="row">
+				<div class="col-sm-5 table-detail-item-label">系统处理时间:</div>
+				<div class="col-sm-7 table-detail-item-value">{{merchantOrderInfo.dealTime }}</div>
+		</div>
+		<div class="row" style="color: #dc3545">
+			<div class="col-sm-5 table-detail-item-label" style="color: #dc3545" >订单金额:</div>
+			<div class="col-sm-7 table-detail-item-value" style="font-size:25px" >{{merchantOrderInfo.gatheringAmountView }}</div>
+		</div>
+		<div class="row" style="color: #dc3545">
+			<div class="col-sm-5 table-detail-item-label" style="color: #dc3545" >银行卡总结余金额:</div>
+			<div class="col-sm-7 table-detail-item-value" style="font-size:25px" >{{merchantOrderInfo.bankTotalView }}</div>
+		</div>
+		<div class="row" style="color: #dc3545">
+			<div class="col-sm-5 table-detail-item-label" style="color: #dc3545" >收款银行卡号:</div>
+			<div class="col-sm-7 table-detail-item-value" style="font-size:25px" >{{merchantOrderInfo.shoukuBankNumber }}</div>
+		</div>
+		<div class="row" style="color: #dc3545">
+			<div class="col-sm-5 table-detail-item-label" style="color: #dc3545" >收款人:</div>
+			<div class="col-sm-7 table-detail-item-value" style="font-size:25px" >{{merchantOrderInfo.shoukuBankPayee }}</div>
+		</div>
+		<div class="row" style="color: #dc3545">
+			<div class="col-sm-5 table-detail-item-label" style="color: #dc3545" >收款银行名称:</div>
+			<div class="col-sm-7 table-detail-item-value" style="font-size:25px" >{{merchantOrderInfo.shoukuBankName }}</div>
+		</div>
+		<div class="row" style="color: #dc3545">
+			<div class="col-sm-5 table-detail-item-label" style="color: #dc3545" >收款支行:</div>
+			<div class="col-sm-7 table-detail-item-value" style="font-size:25px" >{{merchantOrderInfo.shoukuBankBranch }}</div>
+		</div>
+		<div class="row" style="color: #dc3545">
+			<div class="col-sm-5 table-detail-item-label" style="color: #dc3545" >付款银行卡号列表:</div>
+			<div class="col-sm-7 table-detail-item-value" style="font-size:25px" >{{merchantOrderInfo.fukuBankNumber }}</div>
+		</div>
+		<div class="row">
+				<div class="col-sm-5 table-detail-item-label">备注:</div> 
+				<div class="col-sm-7 table-detail-item-value">{{merchantOrderInfo.note }}</div>
+		</div>
+		{{if merchantOrderInfo.orderState == '4'}}<!--4表示支付状态-->
+		<div class="row">
+			<div class="col-sm-5 offset-md-2 table-detail-item-label">
+<!--			<button type="button" class="btn btn-danger btn" onclick="platformOrderVM.forceCancelOrder('{{merchantOrderInfo.id }}')">强制取消订单</button>-->
+			<button type="button" class="btn btn-info btn" onclick="platformOrderVM.showNoteModal('{{merchantOrderInfo.id }}')">修改备注</button>		
+			</div>
+		</div>
+		{{/if}}
+<!--		{{if merchantOrderInfo.orderState == '2'}}&lt;!&ndash;2表示接单状态&ndash;&gt;-->
+<!--		<div class="row">-->
+<!--			<div class="col-sm-5 offset-md-2 table-detail-item-label">-->
+<!--			<button type="button" class="btn btn-success btn" onclick="platformOrderVM.confirmToPaid('{{merchantOrderInfo.receivedAccountId }}','{{merchantOrderInfo.id }}')">确认已支付</button>-->
+<!--			<button type="button" class="btn btn-info btn" onclick="platformOrderVM.showNoteModal('{{merchantOrderInfo.id }}')">修改备注</button>-->
+<!--				<button type="button" class="btn btn-danger btn" onclick="platformOrderVM.cancelOrderRefund('{{merchantOrderInfo.id }}')">取消订单退款</button>-->
+<!--			</div>-->
+<!--		</div>	-->
+<!--		{{/if}}-->
+		{{if merchantOrderInfo.orderState == '9'}}<!--9取消订单退款-->
+		<div class="row">
+			<div class="col-sm-5 offset-md-2 table-detail-item-label">
+			<button type="button" class="btn btn-success btn" onclick="platformOrderVM.confirmToPaidWithCancelOrderRefund('{{merchantOrderInfo.id }}')">确认已支付</button>
+			<button type="button" class="btn btn-info btn" onclick="platformOrderVM.showNoteModal('{{merchantOrderInfo.id }}')">修改备注</button>								
+			</div>
+		</div>	
+		{{/if}}
+	</div>
+
+	</div>
+	</div>
+
+</script>
+<style type="text/css">
+.common-query-cond-form {
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+.add-order-dialog {
+	max-width: 100%;
+	width: 100%;
+}
+
+.add-order-dialog .modal-body {
+	height: 28rem;
+	overflow: auto;
+}
+
+.table-detail button {
+	margin-right: 10px;
+}
+
+.new-order-total-amount {
+	font-weight: bold;
+}
+
+.gathering-code-pic {
+	text-align: center;
+}
+
+.gathering-code-pic img {
+	cursor: pointer;
+	max-height: 500px;
+	max-width: 100%;
+}
+</style>
+</head>
+
+<body>
+	<div th:replace="common/header::html"></div>
+	<div id="platform-order" v-cloak>
+		<form class="form-inline common-query-cond-form">
+			<div class="form-group common-query-cond">
+				<label>订单号(Oder Number):</label><input type="text" class="form-control-sm" v-model="orderNo">
+			</div>
+			<div class="form-group common-query-cond">
+				<label>商户名称(Merchant Name):</label> <input type="text" class="form-control-sm" v-model="merchantName">
+			</div>
+			<div class="form-group common-query-cond">
+				<label>商户订单号(Merchant Oder No):</label> <input type="text" class="form-control-sm" v-model="merchantOrderNo">
+			</div>
+
+			<div class="form-group common-query-cond">
+				<label>收款银行卡号(Receiver Bank Acc No):</label> <input type="text" class="form-control-sm" v-model="shoukuBankNumber">
+			</div>
+			<div class="form-group common-query-cond">
+				<label>银行卡号(Our Bank Acc No):</label>
+<!--				<input type="text" class="form-control-sm" v-model="bankCardAccount">-->
+				<select class="selectpicker" multiple data-max-options="5" data-live-search="true">
+					<option value="All">全部(All)</option>
+					<!-- 这里循环数据 -->
+					<option v-for="(item, index) in useBankList" :value="item.bankCode" :key="index">{{item.bankCode}}</option>
+					<!--					<option v-for="dictItem in useBankList" :value="dictItem.bankCode">{{dictItem.bankCode}}</option>-->
+				</select>
+
+			</div>
+			<div class="form-group common-query-cond">
+				<label>订单状态(Trans Status):</label> <select class="form-control-sm" v-model="orderState">
+					<option value="">全部(All)</option>
+					<option v-for="dictItem in merchantOrderStateDictItems" :value="dictItem.dictItemCode">{{dictItem.dictItemName}}</option>
+				</select>
+			</div>
+		</form>
+		<form class="form-inline common-query-cond-form">
+			<div class="form-group common-query-cond">
+				<label>通道(Merchant):</label> <select class="form-control-sm" v-model="gatheringChannelCode">
+					<option value="">请选择(Choose)</option>
+					<option v-for="dictItem in gatheringChannelDictItems" :value="dictItem.channelCode">{{dictItem.channelName}}</option>
+				</select>
+			</div>
+			<div class="form-group common-query-cond">
+				<label>接单人(Payer):</label> <input type="text" class="form-control-sm" v-model="receiverUserName">
+			</div>
+			<div class="form-group common-query-cond">
+				<label>提交时间(Creat Time):</label><input type="date" class="form-control-sm" v-model="submitStartTime"><span>到(To)</span><input type="date" class="form-control-sm" v-model="submitEndTime">
+			</div>
+
+			<div class="form-group common-query-cond">
+				<label>备注(Remark):</label> <input type="text" class="form-control-sm" v-model="note"><!--备注-->
+			</div>
+
+			<div class="form-group common-query-cond">
+				<label>附加信息(Remark2):</label> <input type="text" class="form-control-sm" v-model="attch"><!--备注-->
+			</div>
+
+			<div class="form-group common-query-cond">
+				<label>系统来源(Merchat):</label> <select class="form-control-sm" v-model="systemSource">
+				<option value="">请选择(Choose)</option>
+				<option v-for="dictItem in systemSourceDictItems" :value="dictItem.dictItemCode">{{dictItem.dictItemName}}</option>
+			</select>
+			</div>
+			<div class="form-group common-query-cond">
+				<label>付款银行卡(Payout Bank Account No):</label> <input type="text" class="form-control-sm" v-model="fukuBankNumber"><!--付款银行列表-->
+			</div>
+			<button type="button" class="btn btn-danger btn-sm" v-on:click="refreshTable" style="margin-right: 10px">搜索(Search)</button>
+			<button type="button" class="btn btn-danger btn-sm" v-on:click="orderloadDown" style="margin-right: 10px">导出(Download)</button>
+
+
+			<input type="checkbox" checked name="checkBox"  v-model="checkbox"  />60s定时刷新(Refesh 60S)
+		</form>
+		<form class="form-inline common-query-cond-form float-right" action="#">
+			<button type="button" class="btn btn-info btn-sm" v-on:click="showAddOrderModal">新增订单</button>
+		</form>
+		<table class="common-table platform-order-table"></table>
+
+		<div v-if="showAddOrderFlag">
+			<div class="modal-mask">
+				<div class="modal-wrapper">
+					<div class="modal-dialog add-order-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">新增订单</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close" v-on:click="showAddOrderFlag = false">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<form>
+									<div class="" style="margin-top: 20px; margin-bottom: 20px; padding-left: 10px; border-left: 3px solid #3080fe;">
+										<span>订单</span>
+										<button type="button" class="btn btn-info btn-sm float-right" v-on:click="addOrder">增加</button>
+									</div>
+									<table class="table table-sm common-table">
+										<thead>
+											<tr>
+												<th>收款通道</th>
+												<th>系统来源</th>
+												<th>收款金额</th>
+												<th>商户订单号</th>
+												<th>收款人姓名</th>
+												<th>收款人卡号</th>
+												<th>收款人银行名称</th>
+												<th>银行支行</th>
+<!--												<th>附加信息</th>-->
+<!--												<th>指定接单账号</th>-->
+<!--												<th>发单方式</th>-->
+<!--												<th style="width: 18%;">发单时间</th>-->
+<!--												<th>操作</th>-->
+											</tr>
+										</thead>
+										<tbody>
+											<tr v-for="(newOrder, index) in newOrders">
+												<td><select class="form-control-sm" v-model="newOrder.gatheringChannelCode">
+														<option value="">请选择</option>
+														<option v-for="dictItem in gatheringChannelDictItems" :value="dictItem.channelCode">{{dictItem.channelName}}</option>
+												</select></td>
+
+												<td><!--系统来源-->
+													<select class="form-control-sm" v-model="newOrder.systemSource">
+														<option value="">请选择</option>
+														<option v-for="dictItem in systemSourceDictItems" :value="dictItem.dictItemCode">{{dictItem.dictItemName}}</option>
+													</select>
+												</td>
+
+												<td><input type="number" class="form-control-sm" v-model.number="newOrder.gatheringAmount"></td><!--金额-->
+												<td><input type="text" class="form-control-sm" v-model="newOrder.orderNo"></td><!--商户订单号-->
+												<td><input type="text" class="form-control-sm" v-model="newOrder.shoukuBankPayee"></td><!--收款人姓名-->
+												<td><input type="text" class="form-control-sm" v-model="newOrder.shoukuBankNumber"></td><!--收款人卡号-->
+												<td><input type="text" class="form-control-sm" v-model="newOrder.shoukuBankName"></td><!--收款人银行名称-->
+												<td><input type="text" class="form-control-sm" v-model="newOrder.shoukuBankBranch"></td><!--银行支行-->
+
+
+<!--												<td><input type="text" class="form-control-sm" v-model="newOrder.attch"></td>-->
+<!--												<td><input type="text" class="form-control-sm" v-model="newOrder.specifiedReceivedAccountId"></td>-->
+<!--												<td><select class="form-control-sm" v-model="newOrder.publishWay">-->
+<!--														<option value="1">立即发单</option>-->
+<!--														<option value="2">定时发单</option>-->
+<!--												</select></td>-->
+<!--												<td><span style="color: red;" v-show="newOrder.publishWay == '1'">立即发单</span> <input type="datetime-local" class="form-control-sm" v-show="newOrder.publishWay == '2'" v-model="newOrder.publishTime"></td>-->
+<!--												<td>-->
+<!--													<button type="button" class="btn btn-success btn-sm" v-on:click="showSplitOrderModal(newOrder, index);">拆单</button>-->
+<!--													<button type="button" class="btn btn-danger btn-sm" v-on:click="newOrders.splice(index, 1);">删除</button>-->
+<!--												</td>-->
+											</tr>
+										</tbody>
+									</table>
+									<div class="form-group row">
+										<div class="col-sm-6 offset-md-4 new-order-total-amount">
+											<label>总金额:</label><label>{{newOrderTotalAmount}}</label>
+										</div>
+									</div>
+									<div class="form-group row">
+										<div class="col-sm-2">
+											<label>商户名称:</label> <select class="form-control-sm" v-model="selectedMerchant" v-on:change="setDefaultNotifyUrl">
+												<option value="">请选择商户</option>
+												<option v-for="dictItem in merchantDictItems" :value="dictItem">{{dictItem.merchantName}}</option>
+											</select>
+										</div>
+										<div class="col-sm-5">
+											<label>异步通知地址:</label> <input type="text" class="form-control-sm" style="width: 60%;" v-model="notifyUrlWithAddOrder">
+										</div>
+										<div class="col-sm-5">
+											<label>同步通知地址:</label> <input type="text" class="form-control-sm" style="width: 60%;" v-model="returnUrlWithAddOrder">
+										</div>
+									</div>
+								</form>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-success btn-sm" v-on:click="batchStartOrder">确定</button>
+								<button type="button" class="btn btn-sm" v-on:click="showAddOrderFlag = false">取消</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div v-if="showSplitOrderFlag">
+			<div class="modal-mask">
+				<div class="modal-wrapper">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">拆单</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close" v-on:click="showSplitOrderFlag = false">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<form>
+									<div class="form-group row">
+										<div class="col-sm-12">
+											<label>单数:</label> <input type="number" class="form-control" v-model.number="splitOrderNumber">
+										</div>
+									</div>
+									<div class="form-group row">
+										<div class="col-sm-12">
+											<label>拆单规则:</label> <select class="form-control" v-model="splitOrderRule">
+												<option value="1">平均</option>
+												<option value="2">随机</option>
+											</select>
+										</div>
+									</div>
+								</form>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-success btn-sm" v-on:click="splitOrder">确定</button>
+								<button type="button" class="btn btn-sm" v-on:click="showSplitOrderFlag = false">取消</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!--付款界面-->
+		<div v-show="approvalFlag">
+			<div class="modal-mask">
+				<div class="modal-wrapper">
+					<div class="modal-dialog" style="max-width: 800px;max-height: 700px;overflow-y: scroll;">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">付款界面(Payment Page)</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close" v-on:click="approvalFlag = false">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body" style="min-height: 20rem; overflow: auto;">
+								<table class="table common-table">
+									<thead>
+									<tr>
+										<th>商户号(Trans No)</th>
+										<th>付款金额(Payment Amount)</th>
+										<th>提交时间(Time)</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td>{{selectedRecord.merchantNum}}</td><!--商户号-->
+										<td style="color: #f00;font-size:25px">{{selectedRecord.gatheringAmountView}}</td><!--提现金额-->
+										<td>{{selectedRecord.submitTime}}</td><!--提现时间-->
+									</tr>
+									</tbody>
+								</table>
+								<table class="table common-table">
+									<thead>
+									<tr>
+										<th>收款银行(Receiver Bank)</th>
+										<th>收款姓名(Receiver Name)</th>
+										<th>收款卡号(Receiver Bank Acc)</th>
+										<th>收款支行(Receiver Branch)</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td>{{selectedRecord.shoukuBankName}}</td>
+										<td>{{selectedRecord.shoukuBankPayee}}</td>
+										<td>{{selectedRecord.shoukuBankNumber}}</td>
+										<td>{{selectedRecord.shoukuBankBranch}}</td>
+									</tr>
+									</tbody>
+								</table>
+
+
+
+								<div class="modal-body">
+									<div style="margin-top: 20px; margin-bottom: 20px; padding-left: 10px; border-left: 3px solid #3080fe;">
+										<span>添加付款银行(Add)</span>
+										<!--										<button type="button" class="btn btn-info btn-sm float-right" v-on:click="addReceiveOrderChannel">增加</button>-->
+										<button type="button" class="btn btn-info btn-sm float-right" v-on:click="addReceiveOrderChannel" >增加</button>
+									</div>
+									<table class="table table-sm common-table">
+										<thead>
+										<tr>
+											<th width="250">付款银行(Payment Account)</th>
+											<th width="100">卡余额(Bank balance)</th>
+											<th width="180">付款金额(Payment Amount)</th>
+											<th width="100">手续费(Bank Fee)</th>
+											<th>备注说明(Remark)</th>
+											<th>操作(Operate)</th>
+										</tr>
+										</thead>
+										<tbody>
+										<tr v-for="(item, index) in submitInfo" :key="index">
+
+<!--											<td>-->
+<!--												<input type="text" class="form-control" v-model="item.payCardNo" >&lt;!&ndash;付款银行&ndash;&gt;-->
+<!--											</td>-->
+											<td>
+												<input v-on:blur="getBankBalance(index)" type="text" class="form-control"  v-model="item.payCardNo" ><!--付款银行-->
+											</td>
+
+											<td>
+												<span style="color: #f00">{{item.amount}}</span>
+											</td>
+											<td>
+												<input type="number" class="form-control" v-model="item.payAmount" ><!--付款金额-->
+											</td>
+											<td>
+												<input type="number" class="form-control" v-model="item.serverCharge" value="0" >
+											</td><!--手续费-->
+											<td>
+												<textarea rows="2" class="form-control" v-model="item.note"></textarea>
+											</td><!--备注说明-->
+
+											<td>
+												<button type="button" class="btn btn-danger btn-sm" v-on:click="submitInfo.splice(index, 1);">删除</button>
+											</td>
+										</tr>
+										</tbody>
+									</table>
+								</div>
+
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-success btn-sm" v-show="!onlyShowNotApprovedBtnFlag" v-on:click="approved">确认付款(Submit)</button>
+<!--								<button type="button" class="btn btn-danger btn-sm" v-on:click="notApproved">审核不通过</button>-->
+								<button type="button" class="btn btn-secondary btn-sm" v-on:click="approvalFlag = false">取消(Cancel)</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<script src="/js/merchant-payout_order.js"></script>
+</body>
+</html>
