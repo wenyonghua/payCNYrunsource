@@ -26,6 +26,6 @@ public class MerchantApplication implements ApplicationRunner {
 	@PostConstruct
 	void setDefaultTimezone() {
 		//东八区
-		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
+		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
 	}
 }

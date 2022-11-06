@@ -8,7 +8,7 @@ spring:
   application:
     name: runscore-admin
   datasource:
-    url: jdbc:mysql://66.112.219.47:3306/runscore2?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Ho_Chi_Minh&autoReconnect=true&failOverReadOnly=false&maxReconnects=10
+    url: jdbc:mysql://66.112.219.47:3306/runscore2?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&autoReconnect=true&failOverReadOnly=false&maxReconnects=10
     #jdbc:mysql://127.0.0.1:3306/runscore2?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
     password: 19880806Ww*
