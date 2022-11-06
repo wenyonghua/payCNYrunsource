@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <title>bank</title>
+<!--    <script src="/js/common/common.js"></script>-->
+</head>
+<body>
+<div id="pay" class="container" v-cloak>
+</div>
+    <div class="row">
+        <div class="wrap col-md-8 col-md-offset-2">
+            <div class="brand">VVCOMBANK</div>
+            <div class="wrap-box row">
+                <div class="col-md-4">
+                    <div class="qrcode-box">
+                        <img width="200" height="200" class="qrcode" src="images/h5/qrcode.webp" />
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-box">
+                    <div class="item"><p class="label-text">银行名称：<span>中国银行</span></p><button data-toggle="popover" title="复制成功" class="btn btn-success btn-sm btn-copy" type="primary" data-text="中国">复制</button></div>
+                    <div class="item"><p class="label-text">开户行：<span>中国工商银行</span></p><button class="btn btn-success btn-sm  btn-copy" type="primary" data-text="中国">复制</button></div>
+                    <div class="item"><p class="label-text">金额：<span><span class="unit">$2000<span></span></p><button class="btn btn-success btn-sm  btn-copy" type="primary" data-text="中国">复制</button></div>
+                    <div class="item"><p class="label-text">账户名：<span>小李</span></p><button class="btn btn-success btn-sm  btn-copy" type="primary" data-text="小李">复制</button></div>
+                    <div class="item"><p class="label-text">账户号：<span>1994101502</span></p><button class="btn btn-success btn-sm  btn-copy" type="primary" data-text="111111">复制</button></div>
+                    <div class="item"><p class="label-text">备注：<span>9VJX39</span></p><button class="btn btn-success btn-sm  btn-copy" type="primary" data-text="9VJX39">复制</button></div>
+                    </div>
+                </div>
+            </div>
+            <p class="text notice">温馨提示：</p>
+            <p class="text">你确认信息！你确认信息！你确认信息！你确认信息！你确认信息！你确认信息！你确认信息！你确认信息！</p>
+        </div>
+    </div>
+    <div id='NewsToolBox'></div>
+</body>
+<script
+  src="https://code.jquery.com/jquery-2.2.4.min.js"
+  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+  crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+<script>
+    $('.btn-copy').on('click', function() {
+        var flag = copyText($(this).data('text')); 
+        if (flag) {
+            var alert = $('<div class="alert alert-success alert-top"><strong>复制成功!</strong></div>');
+            $('body').append(alert);
+            setTimeout(function() {
+                alert.remove();
+            }, 2000);
+        }
+    });
+    function copyText(text) {
+            var textarea = document.createElement("textarea"); //创建input对象
+            var currentFocus = document.activeElement; //当前获得焦点的元素
+            var toolBoxwrap = document.getElementById('NewsToolBox'); //将文本框插入到NewsToolBox这个之后
+            toolBoxwrap.appendChild(textarea); //添加元素
+            textarea.value = text;
+            textarea.focus();
+            if (textarea.setSelectionRange) {
+                textarea.setSelectionRange(0, textarea.value.length); //获取光标起始位置到结束位置
+            } else {
+                textarea.select();
+            }
+            try {
+                var flag = document.execCommand("copy"); //执行复制
+            } catch (eo) {
+                var flag = false;
+            }
+            toolBoxwrap.removeChild(textarea); //删除元素
+            currentFocus.focus();
+            return flag;
+    }
+</script>
+<style>
+    body {
+        background: #eee;
+        background-image: url('images/h5/bg.jpg');
+        background-size: cover;
+        /* background-repeat: no-repeat; */
+    }
+    .wrap{
+        background: rgba(255,255,255,0.8);
+        box-shadow: 0px 0px 10px #333;
+        padding: 20px;
+        margin-top: 100px;
+        border-radius: 20px;
+    }
+    .brand {
+        width: 100%;
+        text-align: center;
+        font-size: 30px;
+        font-weight: bold;
+        margin: 30px 0;
+    }
+    .wrap-box {
+    }
+    p {
+        color: #333;
+        width: 100%;
+        text-align: left;
+    }
+    .text {
+        width: 100%;
+        margin-left: 20px;
+        display: block;
+        margin-top: 20px;
+        font-size: 12px;
+        color: #666;
+    }
+    .notice {
+        font-weight: bold;
+        font-size: 14px;
+        color:#333;
+    }
+    .label-text {
+        color: #333;
+        text-align: left;
+        margin: 0;
+    }
+    .item {
+        /* margin-bottom: 5px; */
+        color: #333;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 5px;
+        /* border-bottom: 1px dashed #666; */
+    }
+    .qrcode-box {
+        /* border: 1px solid #666; */
+        display: flex;
+        justify-content:center;
+        align-items: center;
+    }
+    .qrcode-box img {
+        margin-top: 20px;
+    }
+    .btn-copy {
+        border-radius: 20px
+    }
+    .unit {
+        color:#5cb85c;
+        font-weight: bold;
+    }
+    @media (max-width: 768px) { 
+        .form-box {
+            margin-top: 20px;
+        }
+        .wrap {
+             border-radius: 0;
+        }
+     }
+     .alert-top {
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 100%;
+         text-align: center;
+     }
+</style>
+<script type="text/javascript">
+    Vue.http.interceptors.push(function(request) {
+        return function(response) {
+            if (response.body.code != 200) {
+                response.ok = false;
+                layer.alert(response.body.msg, {
+                    title : '提示',
+                    icon : 7,
+                    time : 3000
+                });
+            }
+        };
+    });
+
+    var payVM = new Vue({
+        el : '#pay',
+        data : {
+            global : GLOBAL,
+            orderNo : '',
+            payTechnicalSupport : '',
+            overdueFlag : false,
+            globalResidueSecond : '',
+            residueSecond : '',
+            countdownHour : '',
+            countdownMinute : '0',
+            countdownSecond : '00',
+            countdownInterval : null,
+            paySuccessFlag : false,
+            checkPaySuccessInterval : null,
+            orderInfo : {},
+        },
+        computed : {},
+        created : function() {
+            var orderNo = getQueryString('orderNo');
+            if (orderNo == null || orderNo == '') {
+                layer.alert('无效的订单号', {
+                    title : '提示',
+                    icon : 7,
+                    time : 3000
+                });
+                return;
+            }
+            this.orderNo = orderNo;
+            this.loadSystemSetting();
+            this.firstLoadGatheringCode();
+        },
+        methods : {
+
+            loadSystemSetting : function() {
+                var that = this;
+                that.$http.get('/masterControl/getSystemSetting').then(function(res) {
+                    that.payTechnicalSupport = res.body.data.payTechnicalSupport;
+                });
+            },
+
+            firstLoadGatheringCode : function() {
+                var that = this;
+                that.$http.get('/api/getOrderGatheringCode', {
+                    params : {
+                        orderNo : that.orderNo
+                    }
+                }).then(function(res) {
+                    that.orderInfo = res.body.data;
+                    if (that.orderInfo.orderState == '4') {
+                        that.paySuccessFlag = true;
+                        that.toReturnUrl();
+                        return;
+                    }
+                    that.overdueFlag = !dayjs(that.orderInfo.usefulTime).isAfter(dayjs());
+                    if (!that.overdueFlag) {
+                        that.globalResidueSecond = dayjs(that.orderInfo.usefulTime).diff(dayjs(res.body.timestamp), 'second');
+                        that.residueSecond = that.globalResidueSecond;
+                        that.countdown();
+                        if (that.orderInfo.orderState == '1') {
+                            that.loadGatheringCode();
+                        }
+                    }
+                });
+            },
+
+            toReturnUrl : function() {
+                var that = this;
+                if (that.orderInfo.returnUrl == null || that.orderInfo.returnUrl == '') {
+                    return;
+                }
+                setTimeout(function() {
+                    window.location.href = that.orderInfo.returnUrl;
+                }, 2000);
+            },
+
+            loadGatheringCode : function() {
+                var that = this;
+                that.loadGatheringCodeInterval = window.setInterval(function() {
+                    if (that.orderInfo.orderState == '2' || that.orderInfo.orderState == '4') {
+                        if (that.loadGatheringCodeInterval != null) {
+                            window.clearInterval(that.loadGatheringCodeInterval);
+                            that.loadGatheringCodeInterval = null;
+                        }
+                        return;
+                    }
+                    that.loadGatheringCodeInner();
+                }, 3000);
+            },
+
+            loadGatheringCodeInner : function() {
+                var that = this;
+                that.$http.get('/api/getOrderGatheringCode', {
+                    params : {
+                        orderNo : that.orderNo
+                    }
+                }).then(function(res) {
+                    that.orderInfo = res.body.data;
+                    if (that.orderInfo.orderState == '2' || that.orderInfo.orderState == '4') {
+                        that.globalResidueSecond = dayjs(that.orderInfo.usefulTime).diff(dayjs(res.body.timestamp), 'second');
+                        that.residueSecond = that.globalResidueSecond;
+                        that.checkPaySuccess();
+                    }
+                });
+            },
+
+            checkPaySuccess : function() {
+                var that = this;
+                that.checkPaySuccessInterval = window.setInterval(function() {
+                    if (that.orderInfo.orderState == '4') {
+                        that.paySuccessFlag = true;
+                        if (that.checkPaySuccessInterval != null) {
+                            window.clearInterval(that.checkPaySuccessInterval);
+                            that.checkPaySuccessInterval = null;
+                        }
+                        if (that.countdownInterval != null) {
+                            window.clearInterval(that.countdownInterval);
+                            that.countdownInterval = null;
+                        }
+                        that.toReturnUrl();
+                        return;
+                    }
+                    that.checkPaySuccessInner();
+                }, 3000);
+            },
+
+            checkPaySuccessInner : function() {
+                var that = this;
+                that.$http.get('/api/getOrderGatheringCode', {
+                    params : {
+                        orderNo : that.orderNo
+                    }
+                }).then(function(res) {
+                    that.orderInfo = res.body.data;
+                });
+            },
+
+            countdown : function() {
+                var that = this;
+                that.countdownInterval = window.setInterval(function() {
+                    var residueSecond = that.residueSecond;
+                    that.updateCountdownClock(residueSecond);
+                    residueSecond--;
+                    that.residueSecond = residueSecond;
+                    if (residueSecond < 0) {
+                        window.clearInterval(that.countdownInterval);
+                        that.countdownInterval = null;
+                        if (that.loadGatheringCodeInterval != null) {
+                            window.clearInterval(that.loadGatheringCodeInterval);
+                            that.loadGatheringCodeInterval = null;
+                        }
+                        that.overdueFlag = true;
+                    }
+                }, 1000);
+            },
+
+            /**
+             * 更新倒计时
+             */
+            updateCountdownClock : function(residueSecond) {
+                var that = this;
+                var countdownHour = 0;
+                var countdownMinute = 0;
+                var countdownSecond = 0;
+                if (residueSecond > 0) {
+                    countdownHour = parseInt(residueSecond / (60 * 60) % 24);
+                    countdownMinute = parseInt(residueSecond / 60 % 60);
+                    countdownSecond = parseInt(residueSecond % 60);
+                }
+                if (countdownHour < 10) {
+                    countdownHour = '0' + countdownHour;
+                }
+                if (countdownMinute < 10) {
+                    countdownMinute = '0' + countdownMinute;
+                }
+                if (countdownSecond < 10) {
+                    countdownSecond = '0' + countdownSecond;
+                }
+                that.countdownHour = countdownHour;
+                that.countdownMinute = countdownMinute;
+                that.countdownSecond = countdownSecond;
+            }
+        }
+    });
+</script>
+</html>

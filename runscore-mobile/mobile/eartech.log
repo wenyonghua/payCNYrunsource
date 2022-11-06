@@ -1,0 +1,9 @@
+[06-14 00:35:49] INFO (StartupInfoLogger.java:50)- Starting Test_7 on wythedeMacBook-Pro.local with PID 66388 (started by wythe in /Users/wythe/IdeaProjects/payrunsource/runscore-mobile)
+[06-14 00:35:49] INFO (SpringApplication.java:675)- No active profile set, falling back to default profiles: default
+[06-14 00:36:12] INFO (StartupInfoLogger.java:59)- Started Test_7 in 43.522 seconds (JVM running for 45.036)
+[06-14 00:37:39] INFO (StartupInfoLogger.java:50)- Starting Test_7 on wythedeMacBook-Pro.local with PID 66412 (started by wythe in /Users/wythe/IdeaProjects/payrunsource/runscore-mobile)
+[06-14 00:37:39] INFO (SpringApplication.java:675)- No active profile set, falling back to default profiles: default
+[06-14 00:38:00] INFO (StartupInfoLogger.java:59)- Started Test_7 in 41.39 seconds (JVM running for 42.793)
+[06-14 00:38:37] INFO (StartupInfoLogger.java:50)- Starting Test_7 on wythedeMacBook-Pro.local with PID 66425 (started by wythe in /Users/wythe/IdeaProjects/payrunsource/runscore-mobile)
+[06-14 00:38:37] INFO (SpringApplication.java:675)- No active profile set, falling back to default profiles: default
+[06-14 00:38:57] INFO (StartupInfoLogger.java:59)- Started Test_7 in 40.925 seconds (JVM running for 42.146)

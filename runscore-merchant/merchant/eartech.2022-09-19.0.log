@@ -1,0 +1,6 @@
+[09-19 22:04:06] INFO (StartupInfoLogger.java:50)- Starting StartOrderTest on wythedeMacBook-Pro.local with PID 11311 (started by wythe in /Users/wythe/IdeaProjects/payrunsource/runscore-merchant)
+[09-19 22:04:06] INFO (SpringApplication.java:675)- No active profile set, falling back to default profiles: default
+[09-19 22:04:37] INFO (StartupInfoLogger.java:59)- Started StartOrderTest in 51.528 seconds (JVM running for 52.888)
+[09-19 22:07:20] INFO (StartupInfoLogger.java:50)- Starting StartOrderTest on wythedeMacBook-Pro.local with PID 11359 (started by wythe in /Users/wythe/IdeaProjects/payrunsource/runscore-merchant)
+[09-19 22:07:20] INFO (SpringApplication.java:675)- No active profile set, falling back to default profiles: default
+[09-19 22:07:55] INFO (StartupInfoLogger.java:59)- Started StartOrderTest in 55.838 seconds (JVM running for 57.038)
