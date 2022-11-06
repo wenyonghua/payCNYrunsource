@@ -25,7 +25,7 @@ public class AdminApplication implements ApplicationRunner {
 	}
 	@PostConstruct
 	void setDefaultTimezone() {
-		//东7区 越南时间
+		//东8区 北京时间
 		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
 	}
 }
