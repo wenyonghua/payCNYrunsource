@@ -1883,7 +1883,7 @@ public class MerchantOrderService {
 		ConfigItemVO configItemVO=null;
 		if("FastPay".equals(param.getSystemSorce()) ){//FastPay 渠道
 			configItemVO = configService.findConfigItemByConfigCode("FastPayadminOrderPayUrl");//查询配置回调管理员系统界面去 http://107.182.185.162:8089/api/payOrder?orderNo=
-		}else if(param.getPayType().equals("wechat") || param.getPayType().equals("alipay")){//如果渠道支付类型是支付宝扫码或者微信扫码同步通知地址
+		}else if(param.getPayType().equals("wechat") || param.getPayType().equals("alipay") || param.getPayType().equals("unionpay")){//如果渠道支付类型是支付宝扫码或者微信扫码同步通知地址
 			configItemVO=configService.findConfigItemByConfigCode("wechatAndAlipayPayUrlSuccess");//如果渠道支付类型是支付宝扫码或者微信扫码同步通知地址
 		}else if("BankQr".equals(param.getSystemSorce())){//BankQr 渠道扫码
 			configItemVO = configService.findConfigItemByConfigCode("BankQrReturnPayUrl");//回调返回地址
@@ -1900,7 +1900,7 @@ public class MerchantOrderService {
 		StartOrderSuccessVO vo = new StartOrderSuccessVO();
 		if("FastPay".equals(param.getSystemSorce())){//FastPay 渠道
 			configItemVO = configService.findConfigItemByConfigCode("FastPaymerchantOrderPayUrl");//FastPay 渠道支付地址
-		}else if(param.getPayType().equals("wechat") || param.getPayType().equals("alipay")){//如果渠道支付类型是支付宝扫码或者微信扫码都跳转固定支付地址
+		}else if(param.getPayType().equals("wechat") || param.getPayType().equals("alipay") || param.getPayType().equals("unionpay")){//如果渠道支付类型是支付宝扫码或者微信扫码都跳转固定支付地址
 			configItemVO=configService.findConfigItemByConfigCode("wechatAndAlipayPayUrl");//如果渠道支付类型是支付宝扫码或者微信扫码都跳转固定支付地址
 		}else if("BankQr".equals(param.getSystemSorce())){
 			configItemVO = configService.findConfigItemByConfigCode("BankQrOrderPayUrl");//BankQr 渠道支付地址 付款地址
