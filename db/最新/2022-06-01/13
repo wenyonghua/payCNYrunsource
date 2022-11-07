@@ -1,0 +1,1 @@
+update merchant_payout_order set rate='0.3'

@@ -1,0 +1,14 @@
+merchant_settlement_record
+需要添加一个字断
+server_charge    varchar   255
+
+user_account
+需要添加一个字断
+ip_whitelist   varchar   555
+
+
+
+
+1.商户后台编辑商户余额，增加商户交易记录
+2.商户提现需要扣除付款卡的银行卡号的手续费
+

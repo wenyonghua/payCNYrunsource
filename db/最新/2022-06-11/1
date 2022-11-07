@@ -1,0 +1,6 @@
+payer_mark
+user_account 添加 payer_mark字段
+update user_account ua set ua.payer_mark='1' //表示不是付款人员
+
+user_account 添加 payment_range字段
+

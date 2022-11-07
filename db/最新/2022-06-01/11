@@ -1,0 +1,359 @@
+DROP VIEW
+IF EXISTS `v_payout_trade_situation`;
+
+CREATE ALGORITHM = UNDEFINED DEFINER = `root`@`localhost` SQL SECURITY DEFINER VIEW `v_payout_trade_situation` AS SELECT
+	(
+		CASE
+		WHEN (`tmp`.`total_order_num` = 0) THEN
+			0
+		ELSE
+			round(
+				(
+					(
+						`tmp`.`total_paid_order_num` / `tmp`.`total_order_num`
+					) * 100
+				),
+				1
+			)
+		END
+	) AS `total_success_rate`,
+	(
+		CASE
+		WHEN (`tmp`.`month_order_num` = 0) THEN
+			0
+		ELSE
+			round(
+				(
+					(
+						`tmp`.`month_paid_order_num` / `tmp`.`month_order_num`
+					) * 100
+				),
+				1
+			)
+		END
+	) AS `month_success_rate`,
+	(
+		CASE
+		WHEN (`tmp`.`yesterday_order_num` = 0) THEN
+			0
+		ELSE
+			round(
+				(
+					(
+						`tmp`.`yesterday_paid_order_num` / `tmp`.`yesterday_order_num`
+					) * 100
+				),
+				1
+			)
+		END
+	) AS `yesterday_success_rate`,
+	(
+		CASE
+		WHEN (`tmp`.`today_order_num` = 0) THEN
+			0
+		ELSE
+			round(
+				(
+					(
+						`tmp`.`today_paid_order_num` / `tmp`.`today_order_num`
+					) * 100
+				),
+				1
+			)
+		END
+	) AS `today_success_rate`,
+	`tmp`.`total_trade_amount` AS `total_trade_amount`,
+	`tmp`.`total_paid_order_num` AS `total_paid_order_num`,
+	`tmp`.`total_order_num` AS `total_order_num`,
+	`tmp`.`month_trade_amount` AS `month_trade_amount`,
+	`tmp`.`month_paid_order_num` AS `month_paid_order_num`,
+	`tmp`.`month_order_num` AS `month_order_num`,
+	`tmp`.`yesterday_trade_amount` AS `yesterday_trade_amount`,
+	`tmp`.`yesterday_paid_order_num` AS `yesterday_paid_order_num`,
+	`tmp`.`yesterday_order_num` AS `yesterday_order_num`,
+	`tmp`.`today_trade_amount` AS `today_trade_amount`,
+	`tmp`.`today_paid_order_num` AS `today_paid_order_num`,
+	`tmp`.`today_order_num` AS `today_order_num`
+FROM
+	(
+		SELECT
+			ifnull(
+				round(
+					sum(
+						(
+							CASE
+							WHEN (`mo`.`order_state` = '10') THEN
+								`mo`.`gathering_amount`
+							ELSE
+								0
+							END
+						)
+					),
+					10
+				),
+				0
+			) AS `total_trade_amount`,
+			sum(
+				(
+					CASE
+					WHEN (`mo`.`order_state` = '10') THEN
+						1
+					ELSE
+						0
+					END
+				)
+			) AS `total_paid_order_num`,
+			count(1) AS `total_order_num`,
+			ifnull(
+				round(
+					sum(
+						(
+							CASE
+							WHEN (
+								(`mo`.`order_state` = '10')
+								AND (
+									`mo`.`submit_time` >= str_to_date(
+										date_format(curdate(), '%Y-%m-01 00:00:00'),
+										'%Y-%m-%d %H:%i:%s'
+									)
+								)
+								AND (
+									`mo`.`submit_time` < (
+										str_to_date(
+											date_format(curdate(), '%Y-%m-01 00:00:00'),
+											'%Y-%m-%d %H:%i:%s'
+										) + INTERVAL 1 MONTH
+									)
+								)
+							) THEN
+								`mo`.`gathering_amount`
+							ELSE
+								0
+							END
+						)
+					),
+					10
+				),
+				0
+			) AS `month_trade_amount`,
+			sum(
+				(
+					CASE
+					WHEN (
+						(`mo`.`order_state` = '10')
+						AND (
+							`mo`.`submit_time` >= str_to_date(
+								date_format(curdate(), '%Y-%m-01 00:00:00'),
+								'%Y-%m-%d %H:%i:%s'
+							)
+						)
+						AND (
+							`mo`.`submit_time` < (
+								str_to_date(
+									date_format(curdate(), '%Y-%m-01 00:00:00'),
+									'%Y-%m-%d %H:%i:%s'
+								) + INTERVAL 1 MONTH
+							)
+						)
+					) THEN
+						1
+					ELSE
+						0
+					END
+				)
+			) AS `month_paid_order_num`,
+			sum(
+				(
+					CASE
+					WHEN (
+						(
+							`mo`.`submit_time` >= str_to_date(
+								date_format(curdate(), '%Y-%m-01 00:00:00'),
+								'%Y-%m-%d %H:%i:%s'
+							)
+						)
+						AND (
+							`mo`.`submit_time` < (
+								str_to_date(
+									date_format(curdate(), '%Y-%m-01 00:00:00'),
+									'%Y-%m-%d %H:%i:%s'
+								) + INTERVAL 1 MONTH
+							)
+						)
+					) THEN
+						1
+					ELSE
+						0
+					END
+				)
+			) AS `month_order_num`,
+			ifnull(
+				round(
+					sum(
+						(
+							CASE
+							WHEN (
+								(`mo`.`order_state` = '10')
+								AND (
+									`mo`.`submit_time` >= (
+										str_to_date(
+											date_format(now(), '%Y-%m-%d'),
+											'%Y-%m-%d %H:%i:%s'
+										) + INTERVAL - (1) DAY
+									)
+								)
+								AND (
+									`mo`.`submit_time` < str_to_date(
+										date_format(now(), '%Y-%m-%d'),
+										'%Y-%m-%d %H:%i:%s'
+									)
+								)
+							) THEN
+								`mo`.`gathering_amount`
+							ELSE
+								0
+							END
+						)
+					),
+					10
+				),
+				0
+			) AS `yesterday_trade_amount`,
+			sum(
+				(
+					CASE
+					WHEN (
+						(`mo`.`order_state` = '10')
+						AND (
+							`mo`.`submit_time` >= (
+								str_to_date(
+									date_format(now(), '%Y-%m-%d'),
+									'%Y-%m-%d %H:%i:%s'
+								) + INTERVAL - (1) DAY
+							)
+						)
+						AND (
+							`mo`.`submit_time` < str_to_date(
+								date_format(now(), '%Y-%m-%d'),
+								'%Y-%m-%d %H:%i:%s'
+							)
+						)
+					) THEN
+						1
+					ELSE
+						0
+					END
+				)
+			) AS `yesterday_paid_order_num`,
+			sum(
+				(
+					CASE
+					WHEN (
+						(
+							`mo`.`submit_time` >= (
+								str_to_date(
+									date_format(now(), '%Y-%m-%d'),
+									'%Y-%m-%d %H:%i:%s'
+								) + INTERVAL - (1) DAY
+							)
+						)
+						AND (
+							`mo`.`submit_time` < str_to_date(
+								date_format(now(), '%Y-%m-%d'),
+								'%Y-%m-%d %H:%i:%s'
+							)
+						)
+					) THEN
+						1
+					ELSE
+						0
+					END
+				)
+			) AS `yesterday_order_num`,
+			ifnull(
+				round(
+					sum(
+						(
+							CASE
+							WHEN (
+								(`mo`.`order_state` = '10')
+								AND (
+									`mo`.`submit_time` >= str_to_date(
+										date_format(now(), '%Y-%m-%d'),
+										'%Y-%m-%d %H:%i:%s'
+									)
+								)
+								AND (
+									`mo`.`submit_time` < (
+										str_to_date(
+											date_format(now(), '%Y-%m-%d'),
+											'%Y-%m-%d %H:%i:%s'
+										) + INTERVAL 1 DAY
+									)
+								)
+							) THEN
+								`mo`.`gathering_amount`
+							ELSE
+								0
+							END
+						)
+					),
+					10
+				),
+				0
+			) AS `today_trade_amount`,
+			sum(
+				(
+					CASE
+					WHEN (
+						(`mo`.`order_state` = '10')
+						AND (
+							`mo`.`submit_time` >= str_to_date(
+								date_format(now(), '%Y-%m-%d'),
+								'%Y-%m-%d %H:%i:%s'
+							)
+						)
+						AND (
+							`mo`.`submit_time` < (
+								str_to_date(
+									date_format(now(), '%Y-%m-%d'),
+									'%Y-%m-%d %H:%i:%s'
+								) + INTERVAL 1 DAY
+							)
+						)
+					) THEN
+						1
+					ELSE
+						0
+					END
+				)
+			) AS `today_paid_order_num`,
+			sum(
+				(
+					CASE
+					WHEN (
+						(
+							`mo`.`submit_time` >= str_to_date(
+								date_format(now(), '%Y-%m-%d'),
+								'%Y-%m-%d %H:%i:%s'
+							)
+						)
+						AND (
+							`mo`.`submit_time` < (
+								str_to_date(
+									date_format(now(), '%Y-%m-%d'),
+									'%Y-%m-%d %H:%i:%s'
+								) + INTERVAL 1 DAY
+							)
+						)
+					) THEN
+						1
+					ELSE
+						0
+					END
+				)
+			) AS `today_order_num`
+		FROM
+			`merchant_payout_order` `mo`
+	) `tmp`;
+

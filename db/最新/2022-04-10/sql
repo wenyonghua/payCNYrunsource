@@ -1,0 +1,6 @@
+select SUM(actual_income) from bank_card_record  br where br.gathering_code_id=(select id from gathering_code where bank_code='123456')
+and br.actual_income>0
+
+
+select SUM(actual_income) from bank_card_record  br where br.gathering_code_id=(select id from gathering_code where bank_code='123456')
+and br.actual_income<0

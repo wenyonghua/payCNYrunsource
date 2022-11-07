@@ -1,0 +1,8 @@
+user_account
+system_source   255  系统来源
+
+update user_account uat set uat.system_source='Pay247'
+
+添加业务参数
+FastPaymerchantOrderPayUrl
+FastPayadminOrderPayUrl

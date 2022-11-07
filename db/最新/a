@@ -1,0 +1,242 @@
+CREATE ALGORITHM = UNDEFINED DEFINER = `root`@`localhost` SQL SECURITY DEFINER VIEW `v_gathering_code_usage` AS SELECT
+	(
+		CASE
+		WHEN (`tmp`.`total_order_num` = 0) THEN
+			0
+		ELSE
+			round(
+				(
+					(
+						`tmp`.`total_paid_order_num` / `tmp`.`total_order_num`
+					) * 100
+				),
+				1
+			)
+		END
+	) AS `total_success_rate`,
+	(
+		CASE
+		WHEN (`tmp`.`today_order_num` = 0) THEN
+			0
+		ELSE
+			round(
+				(
+					(
+						`tmp`.`today_paid_order_num` / `tmp`.`today_order_num`
+					) * 100
+				),
+				1
+			)
+		END
+	) AS `today_success_rate`,
+	`tmp`.`id` AS `id`,
+	`tmp`.`create_time` AS `create_time`,
+	`tmp`.`gathering_amount` AS `gathering_amount`,
+	`tmp`.`gathering_channel_code` AS `gathering_channel_code`,
+	`tmp`.`payee` AS `payee`,
+	`tmp`.`state` AS `state`,
+	`tmp`.`user_account_id` AS `user_account_id`,
+	`tmp`.`storage_id` AS `storage_id`,
+	`tmp`.`fixed_gathering_amount` AS `fixed_gathering_amount`,
+	`tmp`.`gathering_channel_id` AS `gathering_channel_id`,
+	`tmp`.`in_use` AS `in_use`,
+	`tmp`.`initiate_audit_time` AS `initiate_audit_time`,
+	`tmp`.`audit_type` AS `audit_type`,
+	`tmp`.`total_trade_amount` AS `total_trade_amount`,
+	`tmp`.`total_paid_order_num` AS `total_paid_order_num`,
+	`tmp`.`total_order_num` AS `total_order_num`,
+	`tmp`.`today_trade_amount` AS `today_trade_amount`,
+	`tmp`.`today_paid_order_num` AS `today_paid_order_num`,
+	`tmp`.`today_order_num` AS `today_order_num`,
+	`tmp`.`bank_code` AS `bank_code`,
+	`tmp`.`bank_address` AS `bank_address`,
+	`tmp`.`bank_username` AS `bank_username`,
+	`tmp`.`bank_total_amount` AS `bank_total_amount`,
+	`tmp`.`bank_reflect` AS `bank_reflect`,
+	`tmp`.`card_use` AS `card_use`
+
+FROM
+	(
+		SELECT
+			`gc`.`id` AS `id`,
+			`gc`.`create_time` AS `create_time`,
+			`gc`.`gathering_amount` AS `gathering_amount`,
+			`gc`.`gathering_channel_code` AS `gathering_channel_code`,
+			`gc`.`payee` AS `payee`,
+			`gc`.`state` AS `state`,
+			`gc`.`user_account_id` AS `user_account_id`,
+			`gc`.`storage_id` AS `storage_id`,
+			`gc`.`fixed_gathering_amount` AS `fixed_gathering_amount`,
+			`gc`.`gathering_channel_id` AS `gathering_channel_id`,
+			`gc`.`in_use` AS `in_use`,
+			`gc`.`initiate_audit_time` AS `initiate_audit_time`,
+			`gc`.`audit_type` AS `audit_type`,
+			`gc`.`bank_code` AS `bank_code`,
+			`gc`.`bank_address` AS `bank_address`,
+			`gc`.`bank_username` AS `bank_username`,
+			`gc`.`bank_total_amount` AS `bank_total_amount`,
+			`gc`.`bank_reflect` AS `bank_reflect`,
+			`gc`.`card_use` AS `card_use`,
+			ifnull(
+				round(
+					sum(
+						(
+							CASE
+							WHEN (`mo`.`order_state` = '4') THEN
+								`mo`.`gathering_amount`
+							ELSE
+								0
+							END
+						)
+					),
+					4
+				),
+				0
+			) AS `total_trade_amount`,
+			ifnull(
+				sum(
+					(
+						CASE
+						WHEN (`mo`.`order_state` = '4') THEN
+							1
+						ELSE
+							0
+						END
+					)
+				),
+				0
+			) AS `total_paid_order_num`,
+			ifnull(
+				sum(
+					(
+						CASE
+						WHEN (`mo`.`order_state` IS NOT NULL) THEN
+							1
+						ELSE
+							0
+						END
+					)
+				),
+				0
+			) AS `total_order_num`,
+			ifnull(
+				round(
+					sum(
+						(
+							CASE
+							WHEN (
+								(
+									`mo`.`submit_time` >= str_to_date(
+										date_format(now(), '%Y-%m-%d'),
+										'%Y-%m-%d %H:%i:%s'
+									)
+								)
+								AND (
+									`mo`.`submit_time` < (
+										str_to_date(
+											date_format(now(), '%Y-%m-%d'),
+											'%Y-%m-%d %H:%i:%s'
+										) + INTERVAL 1 DAY
+									)
+								)
+								AND (`mo`.`order_state` = '4')
+							) THEN
+								`mo`.`gathering_amount`
+							ELSE
+								0
+							END
+						)
+					),
+					4
+				),
+				0
+			) AS `today_trade_amount`,
+			ifnull(
+				sum(
+					(
+						CASE
+						WHEN (
+							(
+								`mo`.`submit_time` >= str_to_date(
+									date_format(now(), '%Y-%m-%d'),
+									'%Y-%m-%d %H:%i:%s'
+								)
+							)
+							AND (
+								`mo`.`submit_time` < (
+									str_to_date(
+										date_format(now(), '%Y-%m-%d'),
+										'%Y-%m-%d %H:%i:%s'
+									) + INTERVAL 1 DAY
+								)
+							)
+							AND (`mo`.`order_state` = '4')
+						) THEN
+							1
+						ELSE
+							0
+						END
+					)
+				),
+				0
+			) AS `today_paid_order_num`,
+			ifnull(
+				sum(
+					(
+						CASE
+						WHEN (
+							(
+								`mo`.`submit_time` >= str_to_date(
+									date_format(now(), '%Y-%m-%d'),
+									'%Y-%m-%d %H:%i:%s'
+								)
+							)
+							AND (
+								`mo`.`submit_time` < (
+									str_to_date(
+										date_format(now(), '%Y-%m-%d'),
+										'%Y-%m-%d %H:%i:%s'
+									) + INTERVAL 1 DAY
+								)
+							)
+						) THEN
+							1
+						ELSE
+							0
+						END
+					)
+				),
+				0
+			) AS `today_order_num`
+		FROM
+			(
+				(
+					`runscore2`.`gathering_code` `gc`
+					LEFT JOIN `runscore2`.`merchant_order` `mo` ON (
+						(
+							`gc`.`id` = `mo`.`gathering_code_id`
+						)
+					)
+				)
+				LEFT JOIN `runscore2`.`gathering_channel` `channel` ON (
+					(
+						`gc`.`gathering_channel_id` = `channel`.`id`
+					)
+				)
+			)
+		GROUP BY
+			`gc`.`id`,
+			`gc`.`create_time`,
+			`gc`.`gathering_amount`,
+			`gc`.`gathering_channel_code`,
+			`gc`.`payee`,
+			`gc`.`state`,
+			`gc`.`user_account_id`,
+			`gc`.`storage_id`,
+			`gc`.`fixed_gathering_amount`,
+			`gc`.`in_use`,
+			`gc`.`gathering_channel_id`,
+			`gc`.`initiate_audit_time`,
+			`gc`.`audit_type`
+	) `tmp`;
+

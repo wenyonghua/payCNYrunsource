@@ -1,0 +1,8 @@
+bank_card_record
+note  varchar 255   银行卡备注信息
+
+
+merchant_order
+system_source   255  系统来源
+
+

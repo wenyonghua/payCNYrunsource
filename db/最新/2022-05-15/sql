@@ -1,0 +1,10 @@
+fuku_bank_number//付款银行列表 merchant_payout_order
+
+merchantOrderState 添加10
+
+payout_flag  //表 actual_income_record 付款标记
+
+
+
+
+
